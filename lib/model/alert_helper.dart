@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_social2/model/post.dart';
 
 import '../custom_widgets/my_textField.dart';
+import '../custom_widgets/post_content.dart';
 import '../util/constants.dart';
 import '../util/firebase_handler.dart';
 import 'Member.dart';
@@ -93,5 +95,35 @@ class AlertHelper {
             ],
           );
         });
+  }
+
+  Future<void> writeAComment(BuildContext context, {required Post post, required TextEditingController commentController, required member}) async{
+    MyTextField commentTextField = MyTextField(controller: commentController, hint: "Ectivez un commentaire",);
+    Text title = const Text("Nouveau Commentaire");
+    return showDialog(context: context, builder: (BuildContext ctx) {
+      return AlertDialog(
+        title: title,
+        content: SingleChildScrollView(
+            child: Column(
+              children: [
+                PostContent(member: member, post: post,),
+                commentTextField
+              ],
+
+            )
+        ),
+        actions: [
+          close(context, "Annuler"),
+          TextButton(
+              onPressed: () {
+                if (commentController.text != null && commentController.text != "") {
+                  FirebaseHandler().addComment(post, commentController.text);
+                  Navigator.pop(context);
+                }
+              },
+              child: Text("Valider"))
+        ],
+      );
+    });
   }
 }

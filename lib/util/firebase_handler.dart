@@ -121,6 +121,19 @@ class FirebaseHandler {
     }
   }
 
+  addComment(Post post, String text) {
+    if (authInstance.currentUser != null) {
+      Map<String, dynamic> map = {
+        uidKey: authInstance.currentUser!.uid,
+        dateKey: DateTime.now().millisecondsSinceEpoch,
+        textKey: text
+      };
+      post.ref.update({commentKey: FieldValue.arrayUnion([map])});
+      //sendNotifTo(post.memberId, authInstance.currentUser!.uid, "A commenté votre post", post.ref, comment);
+    }
+
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> postFrom(String uid) {
     return fire_user.doc(uid).collection("post").snapshots();
   }

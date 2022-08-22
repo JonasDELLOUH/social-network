@@ -40,10 +40,10 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     final authId = FirebaseHandler().authInstance.currentUser!.uid;
     isMe = (authId == widget.member.uid);
-    _controller = ScrollController()..addListener(() {
-      setState(() {
+    _controller = ScrollController()
+      ..addListener(() {
+        setState(() {});
       });
-    });
     _name = TextEditingController();
     _surname = TextEditingController();
     _desc = TextEditingController();
@@ -75,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           );
         } else {
-          return Center(
+          return const Center(
             child: Text("Aucun post pour l'instant"),
           );
         }
@@ -86,16 +86,12 @@ class _ProfilePageState extends State<ProfilePage> {
   SliverList list(List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshots) {
     return SliverList(
         delegate: SliverChildBuilderDelegate((BuildContext context, index) {
-      if (index >= snapshots.length) {
+      if (index > snapshots.length) {
         return null;
       } else if (index == snapshots.length) {
         return Text("Fin de liste");
       } else {
-        return PostTile(
-          member: widget.member,
-          snapshot: snapshots[index],
-          post: Post(snapshots[index]),
-        );
+        return PostTile(post: Post(snapshots[index]), member: widget.member);
       }
     }));
   }
@@ -108,8 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
       actions: [
         IconButton(
             icon: Icon(Icons.settings),
-            onPressed: (() =>AlertHelper().disconnect(context))
-        )
+            onPressed: (() => AlertHelper().disconnect(context)))
       ],
       flexibleSpace: FlexibleSpaceBar(
         title: (scrolled)
@@ -141,19 +136,13 @@ class _ProfilePageState extends State<ProfilePage> {
     return SliverPersistentHeader(
         pinned: true,
         delegate: HeaderDelegate(
-            member: widget.member,
-            callback: updateUser,
-            scrolled: scrolled)
-    );
+            member: widget.member, callback: updateUser, scrolled: scrolled));
   }
+
   updateUser() {
     if (isMe) {
-      AlertHelper().changeUser(
-          context,
-          member: widget.member,
-          name: _name,
-          surname: _surname,
-          desc: _desc);
+      AlertHelper().changeUser(context,
+          member: widget.member, name: _name, surname: _surname, desc: _desc);
     }
   }
 
@@ -196,9 +185,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   picker(ImageSource source) async {
-    final f = await ImagePicker().pickImage(source: source, maxWidth: 500, maxHeight: 500);
+    final f = await ImagePicker()
+        .pickImage(source: source, maxWidth: 500, maxHeight: 500);
     final File file = File(f!.path);
     FirebaseHandler().modifyPicture(file);
   }
-
 }
