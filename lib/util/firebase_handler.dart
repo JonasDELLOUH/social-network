@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 
 import '../model/Member.dart';
+import '../model/inside_notif.dart';
 import '../model/post.dart';
 import 'constants.dart';
 
@@ -149,6 +150,10 @@ class FirebaseHandler {
       Map<String, dynamic> newMap = { imageUrlKey: value};
       modifyMember(newMap, uid);
     });
+  }
+
+  seenNotif(InsideNotif notif) {
+    notif.reference.update({seenKey: true});
   }
 
 }
